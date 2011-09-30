@@ -1,2 +1,4 @@
 author: Daniel Sommermann
-to run: dl the repo, make, ./lab1
+to run: dl the repo, then
+
+ghc --make histogram.hs; ./histogram < mytestwords
