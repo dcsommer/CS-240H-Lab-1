@@ -6,10 +6,10 @@ import Data.Map (Map, assocs, insertWith, empty, (!))
 -- and a Map from words to frequencies
 data Histogram = Histogram Integer Integer (Map String Integer)
 
-histWidth = 60
-wordMaxLen = 30
-tickSpace = 8
-tableWidth = wordMaxLen + 1 + histWidth
+totalWidth = 80
+wordMaxLen = 25
+histWidth = totalWidth - wordMaxLen - 1
+tickSpace = 4
 ioUnit = return ()
 
 orderTuple :: (String, Integer) -> (String, Integer) -> Ordering
@@ -29,7 +29,7 @@ printTick stepSize x num = do
   remainder <- x
   let real = remainder + stepSize - fromIntegral (length num) in
     let toPrint = floor real in
-      if toPrint >= 3
+      if toPrint >= tickSpace
       then do
         putChars ' ' toPrint 
         putStr num
@@ -47,7 +47,7 @@ printLegend maxCount row1Width =
 printHistogramEntries :: Histogram -> IO ()
 printHistogramEntries (Histogram maxCount longest entries) = 
   let row1Width = 1 + min wordMaxLen longest in do
-      putCharsEnd '=' tableWidth '\n'
+      putCharsEnd '=' totalWidth '\n'
       printLegend maxCount row1Width
       foldl (\x (key, count) ->
         let word = take (fromIntegral row1Width - 1) key in
@@ -55,7 +55,7 @@ printHistogramEntries (Histogram maxCount longest entries) =
           putChars ' ' (row1Width - fromIntegral (length word)) >>
           putCharsEnd '#' (div (count * histWidth) maxCount) '\n')
         ioUnit (sortBy orderTuple (assocs entries))
-      putCharsEnd '=' tableWidth '\n'
+      putCharsEnd '=' totalWidth '\n'
 
 createCounts :: Integer -> Integer -> 
                 Map String Integer-> [String] -> Histogram
