@@ -37,11 +37,12 @@ printTick stepSize x num = do
         return (real + fromIntegral (length num))
 
 printLegend maxCount row1Width =
-    let stepSize = fromIntegral (totalWidth - row1Width) / fromIntegral maxCount
-    in do
-      putCharsEnd ' ' (row1Width-1) '0'
-      foldl (printTick stepSize) (return 0) (map show [1..maxCount])
-      putStr "\n"
+  let stepSize = fromIntegral (totalWidth - row1Width) /
+                 fromIntegral maxCount
+  in do
+    putCharsEnd ' ' (row1Width-1) '0'
+    foldl (printTick stepSize) (return 0) (map show [1..maxCount])
+    putStr "\n"
 
 printHistogramEntries :: Histogram -> IO ()
 printHistogramEntries (Histogram maxCount longest entries) = 
@@ -52,8 +53,10 @@ printHistogramEntries (Histogram maxCount longest entries) =
         let word = take (fromIntegral row1Width - 1) key in
           x >> putStr word >>
           putChars ' ' (row1Width - fromIntegral (length word)) >>
-          putCharsEnd '#' (div (count * (totalWidth - row1Width)) maxCount) '\n')
-        ioUnit (sortBy orderTuple (assocs entries))
+          putCharsEnd '#'
+                      (div (count * (totalWidth - row1Width)) maxCount)
+                      '\n'
+            ) ioUnit (sortBy orderTuple (assocs entries))
       putCharsEnd '=' totalWidth '\n'
 
 createCounts :: Integer -> Integer -> 
