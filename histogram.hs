@@ -8,7 +8,6 @@ data Histogram = Histogram Integer Integer (Map String Integer)
 
 totalWidth = 80
 wordMaxLen = 25
-histWidth = totalWidth - wordMaxLen - 1
 tickSpace = 4
 ioUnit = return ()
 
@@ -38,7 +37,7 @@ printTick stepSize x num = do
         return (real + fromIntegral (length num))
 
 printLegend maxCount row1Width =
-    let stepSize = fromIntegral histWidth / fromIntegral maxCount
+    let stepSize = fromIntegral (totalWidth - row1Width) / fromIntegral maxCount
     in do
       putCharsEnd ' ' (row1Width-1) '0'
       foldl (printTick stepSize) (return 0) (map show [1..maxCount])
@@ -53,7 +52,7 @@ printHistogramEntries (Histogram maxCount longest entries) =
         let word = take (fromIntegral row1Width - 1) key in
           x >> putStr word >>
           putChars ' ' (row1Width - fromIntegral (length word)) >>
-          putCharsEnd '#' (div (count * histWidth) maxCount) '\n')
+          putCharsEnd '#' (div (count * (totalWidth - row1Width)) maxCount) '\n')
         ioUnit (sortBy orderTuple (assocs entries))
       putCharsEnd '=' totalWidth '\n'
 
